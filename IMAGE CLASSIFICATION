@@ -1,0 +1,50 @@
+#IMPORTING
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import StandardScaler
+%matplotlib inline
+
+#Reading file
+JE=pd.read_csv('/content/mnist.csv')
+
+JE.head()
+
+#Closeviewing Data
+j = JE.iloc[7,1:].values
+
+#Reshaping Extracted Data
+j=j.reshape(28,28).astype('uint8')
+plt.imshow(j)
+
+#Y Label
+y=JE['label']
+
+#X Label
+X=JE.drop('label' ,axis=1)
+
+#TRAIN TEST SPLIT
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.2,random_state=1)
+y_train.head()
+
+#RANDOM FOREST CLASSIFIER
+rfc = RandomForestClassifier(n_estimators=100)
+
+rfc.fit(X_train,y_train)
+
+#PREDICTING
+y_pred=rfc.predict(X_test)
+y_pred.shape
+
+#ACCURACY
+from sklearn.metrics import accuracy_score
+accuracy_score(y_test,y_pred)
+
+#FUTURE PREDICTION
+JE_new=JE.sample()
+JE_new
+JE_new_X=JE_new.drop('label',axis=1)
+JE_new_y_pred=rfc.predict(JE_new_X)
+JE_new_y_pred
