@@ -73,3 +73,10 @@ y_pred= best_model.predict(X_test)
 confusion_matrix(y_test,y_pred)
 accuracy_score(y_test,y_pred)
 print(classification_report(y_test,y_pred))
+
+###**FUTURE PREDICTION**
+K=YJH.sample()
+K
+k_X=K[['sepal-length', 'sepal-width', 'petal-length', 'petal-width']]
+k_y=best_model.predict(k_X)
+k_y
