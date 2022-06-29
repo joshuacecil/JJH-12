@@ -78,14 +78,14 @@ model.compile(loss='categorical_crossentropy',optimizer='adam')
 
 num_to_char = dict((i,c) for  i,c in enumerate(chars))
 
-start =numpy.random.randit(0,len(x_data)-1)
+start =numpy.random.randint(0,len(x_data)-1)
 pattern = x_data[start]
 print("random seed")
 print("\".".join([num_to_char[value] for value in pattern]),"\"")
 
 for i in range(1000):
 
-  x=numpy.reshape(pattern, (l,len(pattern), 1))
+  x=numpy.reshape(pattern, (1,len(pattern), 1))
   x=x/float(vocab_len)
   prediction =model.predict(x,verbose=0)
   index = numpy.argmax(prediction)
@@ -93,4 +93,4 @@ for i in range(1000):
   seq_in = [num_to_char[value] for value in pattern]
   sys.stdout.write(result)
   pattern.append(index)
-  pattern = pattern[l:len(pattern)]
+  pattern = pattern[1:len(pattern)]
