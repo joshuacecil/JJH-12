@@ -1,0 +1,75 @@
+##IMOPORTING DEPENDICES
+import pandas as pd
+import numpy
+import sys
+import matplotlib.pyplot as plt
+import scipy
+from sklearn.model_selection import train_test_split,cross_val_score,StratifiedKFold
+from pandas.plotting import scatter_matrix
+from sklearn import model_selection
+from sklearn.metrics import classification_report,confusion_matrix,accuracy_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
+from sklearn.ensemble import VotingClassifier
+
+##READING DATA
+names=['sepal-length','sepal-width','petal-length','petal-width','class']
+YJH=pd.read_csv('https://raw.githubusercontent.com/jbrownlee/Datasets/master/iris.csv',names=names)
+
+##ANALYSING DATA
+YJH.head()
+
+YJH.info()
+
+YJH.describe()
+
+YJH.shape
+
+YJH.groupby('class').size()
+
+##VISUALISING DATA
+YJH.hist()
+plt.show()
+
+scatter_matrix(YJH)
+plt.show()
+
+##SPLITING DATA
+X=YJH[['sepal-length', 'sepal-width', 'petal-length', 'petal-width']]
+y=YJH['class']
+
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.2,random_state=1)
+
+##**TO GET WHICH MODEL IS THE BEST**
+models =[]
+
+models.append(('LR',LogisticRegression(solver='liblinear',multi_class='ovr')))
+models.append(('DT',DecisionTreeClassifier()))
+models.append(('KNN',KNeighborsClassifier()))
+models.append(('LDR',LinearDiscriminantAnalysis()))
+models.append(('GB',GaussianNB()))
+models.append(('SVM',SVC(gamma='auto')))
+
+result = []
+names =[]
+
+for name, model in models:
+  kf = StratifiedKFold(n_splits=10)
+  cv_results= cross_val_score(model,X_train,y_train,cv=kf,scoring='accuracy')
+  result.append(cv_results)
+  names.append(name)
+  print('%s : %f (%f)' % (name,cv_results.mean(),cv_results.std()))
+  
+##USING THE BEST MODEL TO PREDICT
+best_model =SVC(gamma='auto')
+best_model.fit(X_train,y_train)
+y_pred= best_model.predict(X_test)
+
+##EVAUATING
+confusion_matrix(y_test,y_pred)
+accuracy_score(y_test,y_pred)
+print(classification_report(y_test,y_pred))
